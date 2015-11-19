@@ -1,0 +1,12 @@
+/* CSS declarations go here */
+.upvote{
+	text-decoration: none;
+	display:inline-block;
+}
+.news-item-wrapper{
+	display: block;
+}
+.news-item-title{
+	display: inline-block;
+	font-size: 14px;
+}

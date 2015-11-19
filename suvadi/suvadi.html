@@ -1,0 +1,49 @@
+<head>
+  <title>Suvadi - alpha</title>
+  <meta charset="utf-8"><!-- making sure we tell the brow guy that we are going to need some unicode chars for sure -->
+</head>
+
+<body>
+  
+</body>
+
+<template name="newsList">
+<!-- We go for the Ol's becoz they are good at math. They give numbers automagically to our items so we dont have to :P-->
+  <ol>
+  	{{#each newsItems}}
+  		{{> newsItem}}
+  	{{/each}}
+  </ol>
+  {{> addNewsForm}}
+  {{> loginButtons}}
+
+</template>
+
+<template name="newsItem">
+	<li>
+		
+		<div class="news-item-wrapper">
+		{{#if currentUser}}
+			<a class="upvote" href="/upvote/{{_id}}">&#9650;</a><!-- the cute lil upward arrow-->
+			{{else}}
+			<a class="upvote" href="/upvote/">&#9650;</a><!-- the cute lil upward arrow-->
+		{{/if}}	
+			<h2 class="news-item-title">{{Title}}</h2>
+			<p class="news-item-votes">{{Votes}}</p>
+		</div>
+	</li>
+</template>
+
+<template name="addNewsForm">
+{{#if currentUser}}
+	<form>
+		<div><label> URL : </label> <input type="text" name="url" value=""></div>
+		<button class="submit-button" ype="submit">Add News </button>
+	</form>
+{{/if}}
+</template>
+
+
+<template name="loginForm">
+	{{> loginButtons}}
+</template>
