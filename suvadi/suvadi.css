@@ -3,10 +3,252 @@
 	text-decoration: none;
 	display:inline-block;
 }
+ol{
+	list-style: none;
+}
 .news-item-wrapper{
 	display: block;
 }
 .news-item-title{
 	display: inline-block;
-	font-size: 14px;
+	font-size: 0.8em;
+	overflow: hidden;
+}
+.content-wrapper{
+	max-width:700px;
+	margin:0px auto;
+	border: 1px solid #333;
+border-radius: 3px;
+padding: 25px 30px;
+
+}
+
+.login-form-wrapper{
+	margin:0px auto;
+	display:block;
+	width:350px;
+	height:220px;
+	padding:50px;
+	border:1px solid #333;
+	border-radius: 7px;
+}
+
+.login-form-wrapper input {
+	border: 1px solid #333;
+	padding: 5px;
+	border-radius: 2px;
+	float:right;
+}
+.login-form-wrapper label{
+	padding:5px;
+	line-height: 2.2em;
+	font-size:16px;
+}
+.login-form-wrapper form > div{
+	width:88%;
+	display: block;
+}
+
+.register-form-wrapper{
+	width: 450px;
+}
+.register-form-wrapper label{
+line-height: 2.7em;
+	}
+.pull-left{
+	float:left;
+}
+.pull-right{
+	float:right;
+}
+
+.row{
+	display:block;
+	width:100%;
+}
+a{
+	color:#333;
+}
+.news-item-wrapper a:hover{
+	text-decoration:none;
+	color:#000;
+	cursor:pointer;
+}
+.news-item-wrapper a:visited{
+	color:gray;
+}
+.news-item-wrapper .news-item-title {
+	vertical-align: middle;
+padding-top: 1px;
+}
+.topbar{
+	margin: -25px -30px;
+	border:2px solid #333;
+}
+
+.topbar ul{
+	display:inline-block;
+	padding: 20px;
+font-family: Monospace;
+font-size: 15px;
+}
+
+.topbar li{
+	display: inline-block;
+	padding:0 25px;
+
+}
+.topbar li a{
+	text-decoration: none;
+	font-weight: 200;
+}
+
+.topbar h4{
+	display:inline-block;
+	font-family: Monospace;
+font-weight: 200;
+font-size: 24px;
+padding-left: 25px;
+}
+.main-news-list{
+	padding-top:15px;
+}
+
+.add-item-form-wrapper{
+	border-collapse: collapse;
+	border:2px solid #333;
+	margin: 23px -30px;;
+}
+.add-item-form-wrapper form{
+	margin:20px 15px;
+}
+.add-item-form-wrapper input {
+	border: 1px solid #333;
+	padding: 5px;
+	border-radius: 2px;
+}
+.add-item-form-wrapper button{
+	background-color:#fff;
+	margin-left:10px;
+	padding:3px;
+	border:2px solid #333;
+	display: inline-block;
+}
+.add-item-form-wrapper label.error{
+	line-height: 1.5;
+}
+
+p{
+  font-size:12px
+}
+
+#errorbar{
+	position:fixed;
+	height:25px;
+	background-color: rgba(220,25,25,0.7);
+	top:0px;
+	left:0px;
+	width:100%;
+	display:none;
+	text-align:center;
+	color:white;
+	font-weight:600;
+
+}
+label.error{
+	color:red;
+font-size: 10px;
+display: block;
+line-height: 0.1;
+margin-bottom: -2px;
+}
+#registerForm > div{
+	height:55px;
+}
+#loginForm > div{
+	height:50px;
+}
+
+.pagination {
+  display: inline-block;
+  padding-left: 0;
+  margin: 20px 0;
+  border-radius: 2px;
+}
+
+.pagination > li {
+  display: inline;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+  position: relative;
+  float: left;
+  padding: 5px 10px;
+  margin-left: -1px;
+  line-height: 1.428571429;
+  text-decoration: none;
+  background-color: #ffffff;
+  border: 1px solid #333;
+}
+
+.pagination > li:first-child > a,
+.pagination > li:first-child > span {
+  margin-left: 0;
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+}
+
+.pagination > li:last-child > a,
+.pagination > li:last-child > span {
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+.pagination > li > a:hover,
+.pagination > li > span:hover,
+.pagination > li > a:focus,
+.pagination > li > span:focus {
+  background-color: #eee;
+}
+
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+  z-index: 2;
+  color: #ffffff;
+  cursor: default;
+  background-color: #333;
+  border-color: #555;
+}
+
+.pagination > .disabled > span,
+.pagination > .disabled > a,
+.pagination > .disabled > a:hover,
+.pagination > .disabled > a:focus {
+  color: #999999;
+  cursor: not-allowed;
+  background-color: #ffffff;
+  border-color: #333;
+}
+
+.pagination-lg > li > a,
+.pagination-lg > li > span {
+  padding: 5px 5px;
+  font-size: 18px;
+}
+
+.pagination-lg > li:first-child > a,
+.pagination-lg > li:first-child > span {
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+}
+
+.pagination-lg > li:last-child > a,
+.pagination-lg > li:last-child > span {
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
 }
