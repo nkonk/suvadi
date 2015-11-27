@@ -10,7 +10,7 @@
 
 //Declare a collection to store the news items
 //if available it'll use it,otherwise itll create one
-NewsItems = new Mongo.Collection('newsitems');
+NewsItems = new Mongo.Collection('newnewsitems');
 
 Pages = new Meteor.Pagination(NewsItems,{perPage:5,
 itemTemplate:'newsItem',
@@ -30,20 +30,40 @@ name:'newsList'
 
 //Registration route
 Router.route('/register',{
-  template:'RegisterForm'
+  template:'RegisterForm',
+  onBeforeAction:function(){
+    if(Meteor.userId()){
+      this.render('newsList');
+      //logged in , send back to home page silently
+    }
+    else{
+         
+         this.next();//continue rendering registration form 
+    }
+  }
 });
 
 //LogOut route
 Router.route('logout',{
   template:'newsList'
 },function(){
-  //console.log('just seeing if this gets execed');
+
   Meteor.logout();
 });
 
 //Login route
 Router.route('/login',{
-  template:'loginForm'
+  template:'loginForm',
+  onBeforeAction:function(){
+    if(Meteor.userId()){
+      this.render('newsList');
+      //logged in , send back to home page silently
+    }
+    else{
+         
+         this.next();//not logged in continue rendering login form 
+    }
+  }
 });
 
 //And last but very posh looking upvoting regexed route. to allow upvoting
@@ -99,7 +119,7 @@ Template.newsList.events({
         if(!err){
             if(alreadyVoted){
               //jQuery madness here.. The only comedy scene in this lil show.
-                 $('#errorbar').html('You have already voted on this one').fadeIn(300).fadeOut(5000);
+                 $('#errorbar').clearQueue().html('You have already voted on this one').fadeIn(30).delay(3500).fadeOut(50);
             }
         }else{
           //Go to mom and complain now. Go. Reminds me of sis.
@@ -151,6 +171,7 @@ Template.RegisterForm.onRendered(function(){
 
         if(error){
           console.log('registration failed coz : ' + error.reason);
+           $('#errorbar').clearQueue().html('Registration screwed up coz : ' + error.reason).fadeIn(30).delay(3500).fadeOut(50);
           //Mayday Mayday Mayday.. 
         }
         else{
@@ -183,7 +204,7 @@ Template.loginForm.onRendered(function(){
       Meteor.loginWithPassword(email, pass,function(error){
         if(error){
            console.log('Log on failed bcoz :' + error.reason);
-           $('#errorbar').html('Login failed because : '+error.reason).fadeIn(300).delay(3000).fadeOut(500);
+           $('#errorbar').clearQueue().html('Login failed because : '+error.reason).fadeIn(30).delay(3000).fadeOut(50);
            
         }
        else{
@@ -220,23 +241,57 @@ Template.addNewsForm.onRendered(function(){
       //console.log("Forms getting submitted");
       var URL = encodeURI(event.target.url.value);
       //perform sanitiztion before storage and reverse before disp
-       $('#errorbar').html('Please Wait Loading Title Content').fadeIn(300).delay(1000).fadeOut(500);
+       $('#errorbar').clearQueue().html('Please Wait Loading Title Content').fadeIn(10,function(){$(this).css('background-color','blue')}).delay(16000).fadeOut(16,function(){$(this).css('background-color','red');})
+
        $('[name=url]').attr('disabled','disabled');
        $('button').attr('disabled','disabled');
 
-      Meteor.call('addNewsItem',URL,function(err){
-        if(!err){
-          $('#errorbar').css('background-color','lightgreen');
-         $('#errorbar').html('Success : Added URI to the list').fadeIn(300).delay(1500).fadeOut(500);
-         $('#errorbar').css('background-color','red');
-$('[name=url]').removeAttr('disabled');
+      Meteor.call('addNewsItem',URL,function(err,status){
+      
+
+        if(!err && status=='success'){
+         $('#errorbar').clearQueue().html('Success : Added URI to the list').fadeIn(10,function(){$(this).css('background-color','lightgreen')}).delay(3500).fadeOut(50,function(){$(this).css('background-color','red')});
+       $('[name=url]').removeAttr('disabled');
        $('button').removeAttr('disabled');
          Router.go('newsList');
-        }else{
-       $('#errorbar').html('Adding URL failed because : '+err).fadeIn(300).delay(4000).fadeOut(500);
+        }
+        else{
+          var errtxt= '';
+          try {
+            var Status = status.code || status;
+            console.log(Status);
+          switch(Status){
+            case 'ENOTFOUND':{ 
+            errtxt="Page Not found. Please Enter valid URL"; 
+            break;
+                }
+                case 'ETIMEDOUT':{ 
+            errtxt="Request to the URL timed out. Please try again later."; 
+            break;
+                }
+                case 500:{
+                  errtxt = 'Encountered Internal Server Error at the URL. Please try later'
+                  break;
+                }
+          case 'unknown':
+          default:
+                {
+            errtxt='Unknown error. Please try again.';
+            break;
+                }
+          }
+          $('#errorbar').html('Adding URL failed : '+errtxt).fadeIn(300).delay(4000).fadeOut(500);
+        }
+      
+        catch(e){
+           $('#errorbar').html('Adding URL failed. Please try again later ').fadeIn(300).delay(4000).fadeOut(500);
+           console.log(e.message);
+        }
+      }
+       
          $('[name=url]').removeAttr('disabled');
        $('button').removeAttr('disabled');
-        }
+        
       });
      
       Router.go('newsList');
@@ -286,7 +341,10 @@ Meteor.publish('NewsItemsPub',function(){
     //It had code to populate the mongodb document with dummy news items
     //runs only if the document is empty
    //NewsItems.remove({});//purge the db
-    if(NewsItems.find({}).count() === 0){
+    if(NewsItems.find({}).count() !== 0){
+ 
+            
+      
       //Preloader was here
       //Not preloading anything to keep slate clean,if required add here
 
@@ -350,30 +408,64 @@ Meteor.publish('NewsItemsPub',function(){
         maxRedirects:16
         //i know its a funny number. but the amazon.com kinda used it all up. Champ site.
       }, function(error,response,body){
+        //first check for error
+        console.log(error);
         if(!error){
-          //I'm proud of u buddy.. Regular expression to poke out the title tag contents from the webpage.
-        var titleregexp = /<title>\s*(.+?)\s*<\/title>/i ;
-        var title = body.toString().match(titleregexp)[1];
-        done(null,title);
-      }else{
-        done('netError',"");
-        //We'll if we hit a problem we do have someone to blame actually.the network.
-      }
-      });});
+          //then check if the response exists(http responses other than 200 are not always errors)
+          console.log('Status Code : '+response.statusCode);
+          if(response.statusCode == 200){
+            //if and only if we get a 200 resp from server we try to proceed further
+             var titleregexp = /<title>\s*(.+?)\s*<\/title>/i ;
+             var title = "";
+             //Try to extract title from the page.
+             //If the title value isnt set then we'll be using the URL itself as the title.
+        try{
+          var titleContents = body.toString().match(titleregexp);
+          if(titleContents !== null){
+              title = titleContents[1]; 
+           }
+           else{
+            title = url;
+           }
+           done(null,title);
+        }
+       catch(e){
+          done('Error : '+e,null);
+              }
+          }
+          else{
+            console.log('We got something else than 200 +' + response.statusCode);
+            done(response.statusCode,null);
+          }
+
+        }
+        else{
+          
+          done(error,null);
+        }      
+
+      });
+    });
       // third party show ends, stage is dismantled.
       //show off the inner beauty of the newly added newsitem to NOBODY watching the server console.
 
-      //console.log(newsTitle);
-      if(!newsTitle.error){
+      console.log(newsTitle);
+      if(!newsTitle.error ){
       var userid = Meteor.userId();
       var newsItem = new NewsItem(newsTitle.result, url, 0,userid);
       NewsItems.insert(newsItem);
       console.log(newsItem)
+      return 'success';
       //Finally add that precious little thing into the NewsItems collection
-      //return null;
       }
       else{
-        return newsItem.error;
+       try{
+          return newsTitle.error.errno.toString();
+        }
+        catch(e){
+          return newsTitle.error || "unknown";
+        }
+        
       }
     }
   });
