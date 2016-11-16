@@ -302,7 +302,7 @@ Template.addNewsForm.onRendered(function(){
 
 // END OF CLIENT CODE curtain drops suddenly ==============================
 
-//INTERMISSION is recommened here, climax coming soon
+//INTERMISSION is recommended here, climax coming soon
 
 //BEGIN Server side code (scene opens in a murky buzzing server room)======
 
@@ -318,7 +318,7 @@ if (Meteor.isServer) {
         this.CreatedAt = new Date();
         };
 
-//Setup publishes to pump data to the client, well we had the bucket there..
+//Setup publishes to pump data to the client, well we had the bucket there.
 // This is the main (to be honest,the ONLY) publish we do to the clients here.
 Meteor.publish('NewsItemsPub',function(){
   return NewsItems.find({},{
@@ -335,16 +335,9 @@ Meteor.publish('NewsItemsPub',function(){
 //Startup code for the server, execute only on startup.
   Meteor.startup(function () {
     console.log('Server starting Up !');
-    //Funny !! 
-
-    //Code to run on server at startup
-    //It had code to populate the mongodb document with dummy news items
     //runs only if the document is empty
    //NewsItems.remove({});//purge the db
-    if(NewsItems.find({}).count() !== 0){
- 
-            
-      
+    if(NewsItems.find({}).count() !== 0){ 
       //Preloader was here
       //Not preloading anything to keep slate clean,if required add here
 
@@ -396,22 +389,20 @@ Meteor.publish('NewsItemsPub',function(){
       //Well we had to call  up this guy to do all the fancy requests to 
       //the URLS the ppl provide.
       //We kinda rely on the client template to encode the URL before sending it.
-      //If u are really worried like me then u can do encodeURI again on this guy.
+    //set the stage for some 3rd party action.
       var newsTitle = Async.runSync(function(done){
            request({
-            //set the stage for some 3rd party action.
         uri:encodeURI(url),
         method:"GET",
         timeout: 10000,
         followRedirect: true,
         maxRedirect: true,
         maxRedirects:16
-        //i know its a funny number. but the amazon.com kinda used it all up. Champ site.
+        
       }, function(error,response,body){
         //first check for error
         console.log(error);
         if(!error){
-          //then check if the response exists(http responses other than 200 are not always errors)
           console.log('Status Code : '+response.statusCode);
           if(response.statusCode == 200){
             //if and only if we get a 200 resp from server we try to proceed further
@@ -471,8 +462,4 @@ Meteor.publish('NewsItemsPub',function(){
   });
 }
 // Climax music plays.. 
-
-// Credit Rolls
-// Built with  <3  by ONK (Naresh Kumar N. (as span ppl want me to write it))
-
 //Now lets go back to home and try to live happily ever after.
